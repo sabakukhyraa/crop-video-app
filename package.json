@@ -9,12 +9,15 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@dev-plugins/react-query": "^0.1.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "expo": "~52.0.37",
     "expo-font": "~13.0.4",
     "expo-linear-gradient": "~14.0.2",
     "expo-router": "~4.0.17",
     "expo-status-bar": "~2.0.1",
+    "expo-video": "~2.0.5",
+    "ffmpeg-kit-react-native": "^6.0.2",
     "react": "18.3.1",
     "react-native": "0.76.7",
     "react-native-safe-area-context": "4.12.0",

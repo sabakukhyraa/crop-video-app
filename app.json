@@ -2,6 +2,7 @@
   "expo": {
     "name": "7apps-casestudy",
     "slug": "7apps-casestudy",
+    "scheme": "7apps-casestudy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,6 +24,21 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Raleway-Bold.ttf",
+            "./assets/fonts/Raleway-SemiBold.ttf",
+            "./assets/fonts/Raleway-Medium.ttf",
+            "./assets/fonts/Raleway-Regular.ttf",
+            "./assets/fonts/Raleway-Light.ttf"
+          ]
+        }
+      ],
+      "expo-router"
+    ]
   }
 }

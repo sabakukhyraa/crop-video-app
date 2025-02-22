@@ -19,7 +19,10 @@ module.exports = {
 	},
 	plugins: [
 		plugin(({ addUtilities }) => {
-			addUtilities({});
+			addUtilities({
+				'container': "flex-1 p-5 gap-4 items-center",
+				'button-icon': "flex-row items-center gap-2"
+			});
 		}),
 	],
 };

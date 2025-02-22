@@ -11,9 +11,9 @@ module.exports = {
 			ralewaylight: ['Raleway-Light', 'sans-serif'],
 		},
 		colors: {
-			charcoalGray: Colors.charcoalGray,
-			gunmetalGray: Colors.gunmetalGray,
-			softTeal: Colors.softTeal,
+			darkGray: Colors.darkGray,
+			midGray: Colors.midGray,
+			teal: Colors.teal,
 			lightGray: Colors.lightGray
 		},
 	},

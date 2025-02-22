@@ -1,9 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { useBoundStore } from '../store/useBoundStore';
 import { CropParams, cropWithFFMPEG } from 'helpers/cropWithFFMPEG';
 import { CroppedVideo } from '@store/createVideoSlice';
 
-export function useCropVideoMutation() {
+export function useCropVideoMutation(): UseMutationResult<
+  string,
+  Error,
+  CropParams
+> {
   const addCroppedVideo = useBoundStore(
     (state: { addCroppedVideo: (video: CroppedVideo) => void }) => state.addCroppedVideo
   );

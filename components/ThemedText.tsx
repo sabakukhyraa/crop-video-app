@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, TextProps, StyleProp, TextStyle } from 'react-native';
 import tw from '@lib/tailwind';
+import Colors from 'constants/Colors';
 
 const weightMap: { [key in 300 | 400 | 500 | 600 | 700]: string } = {
 	700: 'ralewaybold',
@@ -25,7 +26,7 @@ const ThemedText: React.FC<ThemedTextProps> = ({
 	size = 14,
 	weight = 400,
 	lineHeight = null,
-	color = '000',
+	color = Colors.lightGray,
 	...props
 }) => {
 	const fontFamily = weightMap[weight] || 'raleway';

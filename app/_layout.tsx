@@ -10,6 +10,7 @@ import tw from '../lib/tailwind';
 import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useDeviceContext } from 'twrnc';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const RootLayout = () => {
 	useDeviceContext(tw);
@@ -32,21 +33,25 @@ const RootLayout = () => {
 		return null;
 	}
 
+	const queryClient = new QueryClient()
+
 	return (
-		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-				style={{ flex: 1 }}
-			>
-				<View style={{ flex: 1 }}>
-					<Stack>
-						<Stack.Screen name="details/[videoId]" />
-						<Stack.Screen name="edit/[videoId]" />
-						<Stack.Screen name="index" options={{ headerShown: false }} />
-					</Stack>
-				</View>
-			</KeyboardAvoidingView>
-		</TouchableWithoutFeedback>
+		<QueryClientProvider client={queryClient}>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+				<KeyboardAvoidingView
+					behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+					style={{ flex: 1 }}
+				>
+					<View style={{ flex: 1 }}>
+						<Stack>
+							<Stack.Screen name="details/[videoId]" />
+							<Stack.Screen name="edit/[videoId]" />
+							<Stack.Screen name="index" options={{ headerShown: false }} />
+						</Stack>
+					</View>
+				</KeyboardAvoidingView>
+			</TouchableWithoutFeedback>
+		</QueryClientProvider>
 	);
 };
 

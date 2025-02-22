@@ -14,13 +14,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sabakukhyraa.7appscasestudy"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sabakukhyraa.sevenappscasestudy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -40,6 +42,14 @@
       ],
       "expo-router",
       "expo-video"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "49509374-ee44-4202-a262-2d3cc20d1e23"
+      }
+    }
   }
 }

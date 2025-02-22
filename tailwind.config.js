@@ -1,3 +1,4 @@
+const { default: Colors } = require('constants/Colors');
 const plugin = require('tailwindcss/plugin');
 
 module.exports = {
@@ -10,7 +11,10 @@ module.exports = {
 			ralewaylight: ['Raleway-Light', 'sans-serif'],
 		},
 		colors: {
-
+			charcoalGray: Colors.charcoalGray,
+			gunmetalGray: Colors.gunmetalGray,
+			softTeal: Colors.softTeal,
+			lightGray: Colors.lightGray
 		},
 	},
 	plugins: [

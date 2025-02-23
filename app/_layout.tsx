@@ -6,11 +6,11 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
-import tw from '../lib/tailwind';
 import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useDeviceContext } from 'twrnc';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import tw from '@lib/tailwind';
 
 const RootLayout = () => {
 	useDeviceContext(tw);

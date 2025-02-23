@@ -23,7 +23,7 @@ export const createVideoSlice: StateCreator<VideoSlice> = (set) => ({
   croppedVideos: [],
   selectedVideoUri: null,
 
-  setSelectedVideoUri: (uri) => {
+  setSelectedVideoUri: (uri: string | null) => {
     set({ selectedVideoUri: uri });
   },
 

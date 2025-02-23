@@ -1,4 +1,4 @@
-import { StateCreator } from 'zustand';
+import { StateCreator } from "zustand";
 
 export interface CroppedVideo {
   id: string;
@@ -9,22 +9,31 @@ export interface CroppedVideo {
   description: string;
 }
 
+interface SelectedVideo {
+  uri: string;
+  duration: number | null | undefined;
+}
+
 export interface VideoSlice {
   croppedVideos: CroppedVideo[];
-  selectedVideoUri: string | null;
+  selectedVideo: SelectedVideo | null;
 
-  // actions
-  setSelectedVideoUri: (uri: string | null) => void;
+  setSelectedVideo: (uri: string, duration: number | null | undefined) => void;
+  cleanSelectedVideo: () => void;
   addCroppedVideo: (video: CroppedVideo) => void;
   removeCroppedVideo: (id: string) => void;
 }
 
 export const createVideoSlice: StateCreator<VideoSlice> = (set) => ({
   croppedVideos: [],
-  selectedVideoUri: null,
+  selectedVideo: null,
 
-  setSelectedVideoUri: (uri: string | null) => {
-    set({ selectedVideoUri: uri });
+  setSelectedVideo: (uri: string, duration: number | null | undefined) => {
+    set({ selectedVideo: { uri, duration } });
+  },
+
+  cleanSelectedVideo: () => {
+    set({ selectedVideo: null });
   },
 
   addCroppedVideo: (video) => {
@@ -35,7 +44,7 @@ export const createVideoSlice: StateCreator<VideoSlice> = (set) => ({
 
   removeCroppedVideo: (id) => {
     set((state) => ({
-      croppedVideos: state.croppedVideos.filter((v) => v.id !== id),
+      croppedVideos: state.croppedVideos.filter((video) => video.id !== id),
     }));
   },
 });

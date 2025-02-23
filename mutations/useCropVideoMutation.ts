@@ -1,7 +1,7 @@
-import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import { CroppedVideo } from '@store/createVideoSlice';
-import { useBoundStore } from '@store/useBoundStore';
-import { CropParams, cropWithFFMPEG } from '@helpers/cropWithFFMPEG';
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { CroppedVideo } from "@store/createVideoSlice";
+import { useBoundStore } from "@store/useBoundStore";
+import { CropParams, cropWithFFMPEG } from "@helpers/cropWithFFMPEG";
 
 export function useCropVideoMutation(): UseMutationResult<
   string,
@@ -9,11 +9,12 @@ export function useCropVideoMutation(): UseMutationResult<
   CropParams
 > {
   const addCroppedVideo = useBoundStore(
-    (state: { addCroppedVideo: (video: CroppedVideo) => void }) => state.addCroppedVideo
+    (state: { addCroppedVideo: (video: CroppedVideo) => void }) =>
+      state.addCroppedVideo
   );
 
-  const setSelectedVideoUri = useBoundStore(
-    (state: { setSelectedVideoUri: (uri: string | null) => void }) => state.setSelectedVideoUri
+  const cleanSelectedVideo = useBoundStore(
+    (state: { cleanSelectedVideo: () => void }) => state.cleanSelectedVideo
   );
 
   return useMutation<string, Error, CropParams>({
@@ -27,13 +28,13 @@ export function useCropVideoMutation(): UseMutationResult<
         uri: outputUri,
         startTime: variables.start,
         endTime: variables.end,
-        name: '',
-        description: '',
+        name: "",
+        description: "",
       });
-      setSelectedVideoUri(null)
+      cleanSelectedVideo();
     },
     onError: (error: Error) => {
-      console.error('Video cropping process error:', error);
+      console.error("Video cropping process error:", error);
     },
   });
 }

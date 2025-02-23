@@ -7,10 +7,9 @@ import {
   ViewStyle,
   StyleSheet,
 } from 'react-native';
-import tw from '../lib/tailwind';
 import { LinearGradient } from 'expo-linear-gradient';
-import ThemedText from './ThemedText';
-import Colors from '../constants/Colors';
+import tw from '@lib/tailwind';
+import Colors from '@constants/Colors';
 
 interface BaseButtonProps extends TouchableOpacityProps {
   children?: React.ReactNode;

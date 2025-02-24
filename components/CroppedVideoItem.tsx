@@ -7,22 +7,13 @@ import { generateThumbnail } from "@helpers/generateThumbnail";
 export default function CroppedVideoItem({
   video,
 }: {
-  video: { uri: string; id: string };
+  video: { uri: string; thumbnail: string | null; id: string };
 }) {
-  const [image, setImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const thumbnailImage = await generateThumbnail(video.uri, 0);
-      setImage(thumbnailImage);
-    })();
-  }, [video]);
-
   return (
     <View style={tw.style("w-full p-4 bg-midGray")}>
       <View style={tw.style("w-40 h-40 rounded-3xl overflow-hidden")}>
         <Image
-          source={{ uri: image || "" }}
+          source={{ uri: video.thumbnail || "" }}
           style={tw.style("w-full h-full")}
           placeholder={{ blurHash: "LfFGR%#rNEX7Xrxuxvba9GOXkDnl" }}
         />

@@ -16,6 +16,7 @@ import Feather from "@expo/vector-icons/Feather";
 import Colors from "@constants/Colors";
 import { useBoundStore } from "@store/useBoundStore";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 const Select = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,9 +55,15 @@ const Select = () => {
     }
   };
 
-  const handleBack = () => {
-    cleanSelectedVideo();
-    router.back();
+  const handleBack = async () => {
+    try {
+      await FileSystem.deleteAsync(selectedVideo!.uri, { idempotent: true });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      cleanSelectedVideo();
+      router.back();
+    }
   };
 
   useEffect(() => {
@@ -89,11 +96,7 @@ const Select = () => {
         </ThemedText>
       </View>
       <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
-      <View
-        style={tw.style(
-          "flex-1 bg-darkGray items-center justify-center gap-4 px-5"
-        )}
-      >
+      <View style={tw.style("container justify-center bg-darkGray")}>
         <TouchableOpacity
           onPress={pickVideoAsync}
           style={tw.style(

@@ -2,9 +2,15 @@ import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { CroppedVideo } from "@store/createVideoSlice";
 import { useBoundStore } from "@store/useBoundStore";
 import { CropParams, cropWithFFMPEG } from "@helpers/cropWithFFMPEG";
+import { generateThumbnail } from "@helpers/generateThumbnail";
+
+interface MutationOutput {
+  outputUri: string;
+  thumbnailUri: string | null;
+}
 
 export function useCropVideoMutation(): UseMutationResult<
-  string,
+  MutationOutput,
   Error,
   CropParams
 > {
@@ -17,15 +23,20 @@ export function useCropVideoMutation(): UseMutationResult<
     (state: { cleanSelectedVideo: () => void }) => state.cleanSelectedVideo
   );
 
-  return useMutation<string, Error, CropParams>({
-    mutationFn: async (params: CropParams): Promise<string> => {
+  return useMutation<MutationOutput, Error, CropParams>({
+    mutationFn: async (params: CropParams): Promise<MutationOutput> => {
       const outputUri = await cropWithFFMPEG(params);
-      return outputUri;
+      const thumbnailUri = await generateThumbnail(outputUri, 0);
+      return {
+        outputUri,
+        thumbnailUri,
+      };
     },
-    onSuccess: (outputUri: string, variables: CropParams) => {
+    onSuccess: (data: MutationOutput, variables: CropParams) => {
       addCroppedVideo({
         id: variables.id,
-        uri: outputUri,
+        uri: data.outputUri,
+        thumbnail: data.thumbnailUri,
         startTime: variables.start,
         endTime: variables.end,
         name: "",

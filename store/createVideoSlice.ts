@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 export interface CroppedVideo {
   id: string;
   uri: string;
+  thumbnail: string | null;
   startTime: number;
   endTime: number;
   name: string;

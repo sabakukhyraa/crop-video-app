@@ -37,8 +37,6 @@ export function useCropVideoMutation(): UseMutationResult<
         id: variables.id,
         uri: data.outputUri,
         thumbnail: data.thumbnailUri,
-        startTime: variables.start,
-        endTime: variables.end,
         name: "",
         description: "",
       });

@@ -9,17 +9,24 @@ import { useBoundStore } from "@store/useBoundStore";
 
 interface ModalHeaderProps {
   content: string;
-  cleanVideo: boolean;
+  cleanVideo?: boolean;
+  onClose: () => void;
 }
 
-const ModalHeader = ({ content, cleanVideo }: ModalHeaderProps) => {
+const ModalHeader = ({
+  content,
+  cleanVideo = false,
+  onClose,
+}: ModalHeaderProps) => {
   const cleanSelectedVideo = useBoundStore(
     (state: { cleanSelectedVideo: () => void }) => state.cleanSelectedVideo
   );
 
-  const handleBack = () => {
-    cleanVideo && cleanSelectedVideo();
-    router.back();
+  const handleBack = async () => {
+    if (cleanVideo) {
+      cleanSelectedVideo();
+    }
+    onClose();
   };
 
   return (

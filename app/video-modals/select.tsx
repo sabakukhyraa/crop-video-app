@@ -44,12 +44,15 @@ const Select = () => {
 
       if (!result.canceled) {
         const { uri, duration } = result.assets[0];
-        setSelectedVideo(uri, duration);
-      } else {
-        Alert.alert("You did not select any image.");
+        if (duration && duration < 5000) {
+          Alert.alert("Error", "The video must be longer than 5 seconds.");
+        } else {
+          setSelectedVideo(uri, duration);
+        }
       }
     } catch (err) {
       console.warn(err);
+      Alert.alert("Error", "Something went wrong while picking the video.");
     } finally {
       setIsLoading(false);
     }
@@ -115,10 +118,15 @@ const Select = () => {
         <ThemedText
           size={14}
           weight={500}
+          lineHeight={20}
           style={tw.style("text-center max-w-60")}
         >
           Please select a video file that you would like to crop. You can choose
-          a video from your device.
+          a video from your device, but {"\n"}it must be longer than{" "}
+          <ThemedText size={18} lineHeight={20} weight={700}>
+            5
+          </ThemedText>{" "}
+          seconds.
         </ThemedText>
       </View>
     </SafeAreaView>

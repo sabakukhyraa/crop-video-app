@@ -17,6 +17,7 @@ import Colors from "@constants/Colors";
 import { useBoundStore } from "@store/useBoundStore";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import ModalHeader from "@components/ModalHeader";
 
 const Select = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -82,22 +83,7 @@ const Select = () => {
         Platform.OS == "ios" ? "bg-darkGray" : "bg-midGray"
       )}
     >
-      <View
-        style={tw.style(
-          "w-full py-5 items-center justify-center relative",
-          Platform.OS == "ios" && "bg-midGray"
-        )}
-      >
-        <TouchableOpacity
-          style={tw.style("absolute right-5 bg-lightGray rounded-full p-1")}
-          onPress={handleBack}
-        >
-          <AntDesign name="close" size={24} color={Colors.midGray} />
-        </TouchableOpacity>
-        <ThemedText size={20} weight={700}>
-          Select a Video
-        </ThemedText>
-      </View>
+      <ModalHeader content="Select a Video" onClose={handleBack} />
       <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
       <View style={tw.style("container justify-center bg-darkGray")}>
         <TouchableOpacity

@@ -19,7 +19,7 @@ import * as FileSystem from "expo-file-system";
 import { useSharedValue } from "react-native-reanimated";
 import { Slider } from "react-native-awesome-slider";
 import ModalHeader from "@components/ModalHeader";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import ThemedText from "@components/ThemedText";
 import dynamicTimeFormatter from "@helpers/dynamicTimeFormatter";
 import BaseButton from "@components/BaseButton";
@@ -29,6 +29,10 @@ const { width: windowWidth } = Dimensions.get("window");
 const numberOfThumbnails = 7;
 
 const Crop = () => {
+
+  const navigation = useNavigation();
+
+  // STATE MANAGEMENT
   const [thumbnails, setThumbnails] = useState<VideoThumbnail[]>([]);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [selectedStartTime, setSelectedStartTime] = useState<number>(0);
@@ -38,10 +42,16 @@ const Crop = () => {
     (state: { setCropStartTime: (startTime: number) => void }) =>
       state.setCropStartTime
   );
+  const cleanSelectedVideo = useBoundStore(
+    (state: { cleanSelectedVideo: () => void }) =>
+      state.cleanSelectedVideo
+  );
 
   const progress = useSharedValue(0);
   const maxTime = useSharedValue(100);
 
+
+  // EVENTS 
   const player = useVideoPlayer(selectedVideo!.uri, (player) => {
     player.muted = true;
     player.timeUpdateEventInterval = 0.5;
@@ -70,8 +80,9 @@ const Crop = () => {
     muted: player.muted,
   });
 
+  // LIFECYCLE HOOKS
   useEffect(() => {
-    if (!player.duration || player.duration <= 0) return;
+    if (player.duration <= 0 || thumbnails.length > 0) return;
     (() => {
       try {
         Array.from(
@@ -103,6 +114,14 @@ const Crop = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      cleanSelectedVideo()
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   const handleContinue = () => {
     setCropStartTime(selectedStartTime);
   };
@@ -115,7 +134,6 @@ const Crop = () => {
       )}
     >
       <ModalHeader
-        cleanVideo
         content="Crop the Video"
         onClose={() => router.back()}
       />
@@ -209,7 +227,7 @@ const Crop = () => {
               markWidth={0}
               renderThumb={() => (
                 <View
-                  style={tw.style(`h-13 border-2 rounded-md border-lightGray`, {
+                  style={tw.style(`h-13 border-[3px] rounded-md border-lightGray`, {
                     backgroundColor: "transparent",
                     width: (5 / Math.max(player.duration, 5)) * windowWidth,
                   })}

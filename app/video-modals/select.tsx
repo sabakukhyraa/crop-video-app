@@ -61,7 +61,10 @@ const Select = () => {
 
   const handleBack = async () => {
     try {
-      await FileSystem.deleteAsync(selectedVideo!.uri, { idempotent: true });
+      selectedVideo &&
+        (await FileSystem.deleteAsync(selectedVideo!.uri, {
+          idempotent: true,
+        }));
     } catch (err) {
       console.error(err);
     } finally {

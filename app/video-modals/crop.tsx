@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Platform,
-  Dimensions,
-} from "react-native";
+import { View, TouchableOpacity, Platform, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
 import tw from "@lib/tailwind";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Colors from "@constants/Colors";
 import { useBoundStore } from "@store/useBoundStore";
 import { useVideoPlayer, VideoThumbnail, VideoView } from "expo-video";
@@ -58,7 +53,7 @@ const Crop = () => {
     p.muted = true;
     p.timeUpdateEventInterval = 0.5;
     p.play();
-    p.pause()
+    Platform.OS == "ios" && p.pause();
   });
 
   const { isPlaying } = useEvent(player, "playingChange", {
@@ -107,7 +102,9 @@ const Crop = () => {
         );
 
         const results = await Promise.all(
-          times.map((requestTime) => player.generateThumbnailsAsync(requestTime))
+          times.map((requestTime) =>
+            player.generateThumbnailsAsync(requestTime)
+          )
         );
 
         const allThumbnails = results.map((item) => item[0]);
@@ -143,17 +140,15 @@ const Crop = () => {
     });
     return unsubscribe;
   }, [navigation, cleanSelectedVideo]);
-  
 
   // -----------------------------------------------------
   // ROUTING
   // -----------------------------------------------------
   useEffect(() => {
     if (selectedVideo?.cropStartTime) {
-      router.push("/video-modals/metadata")
+      router.push("/video-modals/metadata");
     }
-  }, [selectedVideo])
-  
+  }, [selectedVideo]);
 
   // -----------------------------------------------------
   // RENDER
@@ -197,11 +192,7 @@ const Crop = () => {
             {muted ? (
               <Ionicons name="volume-mute" size={32} color={Colors.lightGray} />
             ) : (
-              <Ionicons
-                name="volume-high"
-                size={32}
-                color={Colors.lightGray}
-              />
+              <Ionicons name="volume-high" size={32} color={Colors.lightGray} />
             )}
           </TouchableOpacity>
           <TouchableOpacity
@@ -231,7 +222,17 @@ const Crop = () => {
 
         <View style={tw.style("container pt-0")}>
           <View style={tw.style("relative items-center")}>
-            <StoryBoard thumbnails={thumbnails} numberOfThumbnails={numberOfThumbnails} style={tw`w-full`} />
+            <StoryBoard
+              thumbnails={thumbnails}
+              numberOfThumbnails={numberOfThumbnails}
+              style={tw`w-full`}
+            />
+
+            <View
+              style={tw.style(`absolute h-12 w-[2px] bg-lightGray`, {
+                left: (currentTime / player.duration) * windowWidth,
+              })}
+            />
 
             <Slider
               progress={progress}
@@ -266,18 +267,22 @@ const Crop = () => {
               bubble={(value) => dynamicTimeFormatter(Math.floor(value))}
               bubbleTextStyle={tw.style("font-raleway")}
             />
-
-            <ThemedText style={tw.style("self-start mt-1 px-5")}>
-              {dynamicTimeFormatter(Math.floor(currentTime))}
-            </ThemedText>
           </View>
+          <ThemedText style={tw.style("self-start -mt-3 px-5")}>
+            {dynamicTimeFormatter(Math.floor(currentTime))}
+          </ThemedText>
         </View>
 
         <BaseButton
           style={tw.style("button-icon", { width: windowWidth - 40 })}
           onPress={() => setCropStartTime(selectedStartTime)}
         >
-          <MaterialCommunityIcons name="movie-open-edit" size={20} style={tw`mb-1`} color={Colors.darkGray} />
+          <MaterialCommunityIcons
+            name="movie-open-edit"
+            size={20}
+            style={tw`mb-1`}
+            color={Colors.darkGray}
+          />
           <ThemedText
             color={Colors.darkGray}
             lineHeight={18}

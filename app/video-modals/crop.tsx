@@ -21,7 +21,8 @@ import { Slider } from "react-native-awesome-slider";
 import ModalHeader from "@components/ModalHeader";
 import { router } from "expo-router";
 import ThemedText from "@components/ThemedText";
-import secondsToHours from "@helpers/secondsToHours";
+import dynamicTimeFormatter from "@helpers/dynamicTimeFormatter";
+import BaseButton from "@components/BaseButton";
 
 const { width: windowWidth } = Dimensions.get("window");
 
@@ -30,9 +31,13 @@ const numberOfThumbnails = 7;
 const Crop = () => {
   const [thumbnails, setThumbnails] = useState<VideoThumbnail[]>([]);
   const [currentTime, setCurrentTime] = useState<number>(0);
-  const [cropStartTime, setCropStartTime] = useState<number>(0);
+  const [selectedStartTime, setSelectedStartTime] = useState<number>(0);
 
   const selectedVideo = useBoundStore((state) => state.selectedVideo);
+  const setCropStartTime = useBoundStore(
+    (state: { setCropStartTime: (startTime: number) => void }) =>
+      state.setCropStartTime
+  );
 
   const progress = useSharedValue(0);
   const maxTime = useSharedValue(100);
@@ -43,21 +48,22 @@ const Crop = () => {
     player.play();
   });
 
+  const { isPlaying } = useEvent(player, "playingChange", {
+    isPlaying: player.playing,
+  });
+
   useEventListener(player, "statusChange", (payload) => {
     if (payload.status == "readyToPlay") {
       maxTime.value = player.duration - 5;
       player.pause();
     }
   });
-  const { isPlaying } = useEvent(player, "playingChange", {
-    isPlaying: player.playing,
-  });
 
   useEventListener(player, "timeUpdate", async (payload) => {
     setCurrentTime(payload.currentTime);
-    if (cropStartTime + 5 < payload.currentTime) {
+    if (selectedStartTime + 5 < payload.currentTime) {
       player.pause();
-      player.currentTime = cropStartTime;
+      player.currentTime = selectedStartTime;
     }
   });
   const { muted } = useEvent(player, "mutedChange", {
@@ -97,6 +103,10 @@ const Crop = () => {
     };
   }, []);
 
+  const handleContinue = () => {
+    setCropStartTime(selectedStartTime);
+  };
+
   return (
     <SafeAreaView
       style={tw.style(
@@ -111,7 +121,9 @@ const Crop = () => {
       />
       <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
       <View
-        style={tw.style("flex-1 bg-darkGray items-center justify-start gap-5")}
+        style={tw.style(
+          "flex-1 bg-darkGray items-center justify-start gap-5 pb-5"
+        )}
       >
         <View style={tw.style("w-full bg-[#000] shadow-md")}>
           <VideoView
@@ -175,7 +187,7 @@ const Crop = () => {
                   width: windowWidth,
                 }
               )}
-              style={tw.style("w-full max-h-12 bg-lightGray")}
+              style={tw.style("w-full max-h-12 bg-midGray")}
             />
             <Slider
               progress={progress}
@@ -183,12 +195,14 @@ const Crop = () => {
               maximumValue={maxTime}
               onSlidingComplete={(value) => {
                 player.currentTime = value;
-                setCropStartTime(value);
+                setSelectedStartTime(value);
               }}
               disableTrackFollow
               style={tw.style(
                 `w-[${
-                  windowWidth - (5 / Math.max(player.duration, 5)) * windowWidth
+                  16 +
+                  windowWidth -
+                  (5 / Math.max(player.duration, 5)) * windowWidth
                 }px] h-13 left-0 -top-[2px] absolute`
               )}
               thumbWidth={16}
@@ -202,18 +216,27 @@ const Crop = () => {
                 />
               )}
               renderContainer={() => <View></View>}
-              bubble={(value) => secondsToHours(Math.floor(value))}
+              bubble={(value) => dynamicTimeFormatter(Math.floor(value))}
               bubbleTextStyle={tw.style("font-raleway")}
             />
             <ThemedText style={tw.style("self-start mt-1 px-5")}>
-              {secondsToHours(Math.floor(currentTime))}
-            </ThemedText>
-            <ThemedText style={tw.style("self-start mt-1 px-5")}>
-              Choose the crop starting time:{" "}
-              {secondsToHours(Math.floor(cropStartTime))}?
+              {dynamicTimeFormatter(Math.floor(currentTime))}
             </ThemedText>
           </View>
         </View>
+        <BaseButton
+          style={tw.style("button-icon", { width: windowWidth - 40 })}
+          onPress={handleContinue}
+        >
+          <ThemedText
+            color={Colors.darkGray}
+            lineHeight={18}
+            weight={500}
+            size={16}
+          >
+            Select this 5-second video
+          </ThemedText>
+        </BaseButton>
       </View>
     </SafeAreaView>
   );

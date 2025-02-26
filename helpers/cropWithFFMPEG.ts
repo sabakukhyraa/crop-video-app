@@ -1,6 +1,10 @@
 import { FFmpegKit, ReturnCode } from "ffmpeg-kit-react-native";
 import * as FileSystem from "expo-file-system";
-import secondsToHours from "./secondsToHours";
+
+const formatTime = (seconds: number) => {
+  const date = new Date(seconds * 1000);
+  return date.toISOString().substring(11, 23);
+};
 
 export interface CropParams {
   uri: string;
@@ -14,9 +18,9 @@ export const cropWithFFMPEG = (params: CropParams): Promise<string> => {
   return new Promise<string>(async (resolve, reject) => {
     try {
       const outputPath = `${documentsDir}cropped-${params.id}.mp4`;
-      const command = `-ss ${secondsToHours(params.start)} -i "${
+      const command = `-ss ${formatTime(params.start)} -i "${
         params.uri
-      }" -t ${secondsToHours(5)} -c copy "${outputPath}"`;
+      }" -t ${formatTime(5)} -c copy "${outputPath}"`;
 
       const session = await FFmpegKit.execute(command);
       const returnCode = await session.getReturnCode();

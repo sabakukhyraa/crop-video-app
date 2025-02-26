@@ -1,38 +1,39 @@
+import { useEffect, useRef, useState } from "react";
 import {
   View,
   TouchableOpacity,
   Platform,
-  FlatList,
   Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "expo-router";
 import tw from "@lib/tailwind";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Colors from "@constants/Colors";
 import { useBoundStore } from "@store/useBoundStore";
 import { useVideoPlayer, VideoThumbnail, VideoView } from "expo-video";
 import { useEvent, useEventListener } from "expo";
-import { useEffect, useState } from "react";
-import { Image } from "expo-image";
 import * as FileSystem from "expo-file-system";
 import { useSharedValue } from "react-native-reanimated";
 import { Slider } from "react-native-awesome-slider";
 import ModalHeader from "@components/ModalHeader";
-import { router, useNavigation } from "expo-router";
 import ThemedText from "@components/ThemedText";
-import dynamicTimeFormatter from "@helpers/dynamicTimeFormatter";
 import BaseButton from "@components/BaseButton";
+import dynamicTimeFormatter from "@helpers/dynamicTimeFormatter";
+import { router } from "expo-router";
+import StoryBoard from "@components/StoryBoard";
 
 const { width: windowWidth } = Dimensions.get("window");
-
-const numberOfThumbnails = 7;
+const numberOfThumbnails = 7; // number of frames in storyboard
 
 const Crop = () => {
-
   const navigation = useNavigation();
 
-  // STATE MANAGEMENT
+  // -----------------------------------------------------
+  // STATE
+  // -----------------------------------------------------
   const [thumbnails, setThumbnails] = useState<VideoThumbnail[]>([]);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [selectedStartTime, setSelectedStartTime] = useState<number>(0);
@@ -43,63 +44,84 @@ const Crop = () => {
       state.setCropStartTime
   );
   const cleanSelectedVideo = useBoundStore(
-    (state: { cleanSelectedVideo: () => void }) =>
-      state.cleanSelectedVideo
+    (state: { cleanSelectedVideo: () => void }) => state.cleanSelectedVideo
   );
 
+  // Reanimated slider progress
   const progress = useSharedValue(0);
   const maxTime = useSharedValue(100);
 
-
-  // EVENTS 
-  const player = useVideoPlayer(selectedVideo!.uri, (player) => {
-    player.muted = true;
-    player.timeUpdateEventInterval = 0.5;
-    player.play();
+  // -----------------------------------------------------
+  // VIDEO PLAYER SETUP
+  // -----------------------------------------------------
+  const player = useVideoPlayer(selectedVideo!.uri, (p) => {
+    p.muted = true;
+    p.timeUpdateEventInterval = 0.5;
+    p.play();
+    p.pause()
   });
 
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: player.playing,
   });
 
-  useEventListener(player, "statusChange", (payload) => {
-    if (payload.status == "readyToPlay") {
-      maxTime.value = player.duration - 5;
-      player.pause();
-    }
-  });
-
-  useEventListener(player, "timeUpdate", async (payload) => {
-    setCurrentTime(payload.currentTime);
-    if (selectedStartTime + 5 < payload.currentTime) {
-      player.pause();
-      player.currentTime = selectedStartTime;
-    }
-  });
   const { muted } = useEvent(player, "mutedChange", {
     muted: player.muted,
   });
 
-  // LIFECYCLE HOOKS
+  // -----------------------------------------------------
+  // EVENT LISTENERS
+  // -----------------------------------------------------
+  useEventListener(player, "statusChange", (payload) => {
+    if (payload.status === "readyToPlay") {
+      maxTime.value = player.duration - 5;
+    }
+  });
+
+  useEventListener(player, "timeUpdate", (payload) => {
+    setCurrentTime(payload.currentTime);
+    if (selectedStartTime + 5 < payload.currentTime) {
+      player.pause();
+      player.currentTime = selectedStartTime;
+      // pause and rewind the 5-second vidoe.
+    }
+  });
+
+  // -----------------------------------------------------
+  // STORYBOARD GENERATION
+  // -----------------------------------------------------
+  // prevent strict mode
+  const hasGeneratedThumbnails = useRef(false);
+
   useEffect(() => {
-    if (player.duration <= 0 || thumbnails.length > 0) return;
-    (() => {
+    if (player.duration <= 0) return;
+    if (hasGeneratedThumbnails.current) return;
+
+    hasGeneratedThumbnails.current = true;
+
+    (async () => {
       try {
-        Array.from(
+        const times = Array.from(
           { length: numberOfThumbnails },
           (_, i) => (player.duration / numberOfThumbnails) * (i + 0.5)
-        ).forEach(async (requestTime) => {
-          const newThumbnail = await player.generateThumbnailsAsync(
-            requestTime
-          );
-          setThumbnails((prev) => [...prev, newThumbnail[0]]);
-        });
+        );
+
+        const results = await Promise.all(
+          times.map((requestTime) => player.generateThumbnailsAsync(requestTime))
+        );
+
+        const allThumbnails = results.map((item) => item[0]);
+        setThumbnails(allThumbnails);
       } catch (err) {
         console.warn(err);
       }
     })();
   }, [player.duration]);
 
+  // -----------------------------------------------------
+  // CLEANUP
+  // -----------------------------------------------------
+  // Cleanup the selected video from cache
   useEffect(() => {
     return () => {
       (async () => {
@@ -114,35 +136,47 @@ const Crop = () => {
     };
   }, []);
 
+  // Clean the store on modal exit
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      cleanSelectedVideo()
+    const unsubscribe = navigation.addListener("beforeRemove", () => {
+      cleanSelectedVideo();
     });
-
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, cleanSelectedVideo]);
+  
 
-  const handleContinue = () => {
-    setCropStartTime(selectedStartTime);
-  };
+  // -----------------------------------------------------
+  // ROUTING
+  // -----------------------------------------------------
+  useEffect(() => {
+    if (selectedVideo?.cropStartTime) {
+      router.push("/video-modals/metadata")
+    }
+  }, [selectedVideo])
+  
 
+  // -----------------------------------------------------
+  // RENDER
+  // -----------------------------------------------------
   return (
     <SafeAreaView
       style={tw.style(
         "flex-1",
-        Platform.OS == "ios" ? "bg-darkGray" : "bg-midGray"
+        Platform.OS === "ios" ? "bg-darkGray" : "bg-midGray"
       )}
     >
-      <ModalHeader
-        content="Crop the Video"
-        onClose={() => router.back()}
-      />
+      {/* Header */}
+      <ModalHeader content="Crop the Video" onClose={() => router.back()} />
+
+      {/* Seperator */}
       <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
+
       <View
         style={tw.style(
           "flex-1 bg-darkGray items-center justify-start gap-5 pb-5"
         )}
       >
+        {/* VideoView */}
         <View style={tw.style("w-full bg-[#000] shadow-md")}>
           <VideoView
             player={player}
@@ -151,15 +185,23 @@ const Crop = () => {
             contentFit="contain"
           />
         </View>
+
+        {/* Play/Pause & Mute/Unmute Buttons */}
         <View style={tw.style("w-full flex-row items-center justify-center")}>
           <TouchableOpacity
             style={tw.style("absolute right-5")}
-            onPress={() => (player.muted = !player.muted)}
+            onPress={() => {
+              player.muted = !player.muted;
+            }}
           >
             {muted ? (
               <Ionicons name="volume-mute" size={32} color={Colors.lightGray} />
             ) : (
-              <Ionicons name="volume-high" size={32} color={Colors.lightGray} />
+              <Ionicons
+                name="volume-high"
+                size={32}
+                color={Colors.lightGray}
+              />
             )}
           </TouchableOpacity>
           <TouchableOpacity
@@ -186,27 +228,11 @@ const Crop = () => {
             )}
           </TouchableOpacity>
         </View>
+
         <View style={tw.style("container pt-0")}>
           <View style={tw.style("relative items-center")}>
-            <FlatList
-              data={thumbnails}
-              keyExtractor={(item) => item.actualTime.toString()}
-              renderItem={({ item }) => (
-                <Image
-                  source={item}
-                  style={tw.style("h-12", {
-                    width: windowWidth / numberOfThumbnails,
-                  })}
-                />
-              )}
-              contentContainerStyle={tw.style(
-                "flex-row items-center justify-start",
-                {
-                  width: windowWidth,
-                }
-              )}
-              style={tw.style("w-full max-h-12 bg-midGray")}
-            />
+            <StoryBoard thumbnails={thumbnails} numberOfThumbnails={numberOfThumbnails} style={tw`w-full`} />
+
             <Slider
               progress={progress}
               minimumValue={useSharedValue(0)}
@@ -227,29 +253,35 @@ const Crop = () => {
               markWidth={0}
               renderThumb={() => (
                 <View
-                  style={tw.style(`h-13 border-[3px] rounded-md border-lightGray`, {
-                    backgroundColor: "transparent",
-                    width: (5 / Math.max(player.duration, 5)) * windowWidth,
-                  })}
+                  style={tw.style(
+                    `h-13 border-[3px] rounded-md border-lightGray`,
+                    {
+                      backgroundColor: "transparent",
+                      width: (5 / Math.max(player.duration, 5)) * windowWidth,
+                    }
+                  )}
                 />
               )}
-              renderContainer={() => <View></View>}
+              renderContainer={() => <View />}
               bubble={(value) => dynamicTimeFormatter(Math.floor(value))}
               bubbleTextStyle={tw.style("font-raleway")}
             />
+
             <ThemedText style={tw.style("self-start mt-1 px-5")}>
               {dynamicTimeFormatter(Math.floor(currentTime))}
             </ThemedText>
           </View>
         </View>
+
         <BaseButton
           style={tw.style("button-icon", { width: windowWidth - 40 })}
-          onPress={handleContinue}
+          onPress={() => setCropStartTime(selectedStartTime)}
         >
+          <MaterialCommunityIcons name="movie-open-edit" size={20} style={tw`mb-1`} color={Colors.darkGray} />
           <ThemedText
             color={Colors.darkGray}
             lineHeight={18}
-            weight={500}
+            weight={600}
             size={16}
           >
             Select this 5-second video

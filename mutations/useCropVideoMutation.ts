@@ -23,6 +23,9 @@ export function useCropVideoMutation(): UseMutationResult<
     (state: { cleanSelectedVideo: () => void }) => state.cleanSelectedVideo
   );
 
+  const videoName = useBoundStore((state) => state.videoName);
+  const videoDescription = useBoundStore((state) => state.videoDescription);
+
   return useMutation<MutationOutput, Error, CropParams>({
     mutationFn: async (params: CropParams): Promise<MutationOutput> => {
       const outputUri = await cropWithFFMPEG(params);
@@ -37,8 +40,8 @@ export function useCropVideoMutation(): UseMutationResult<
         id: variables.id,
         uri: data.outputUri,
         thumbnail: data.thumbnailUri,
-        name: "",
-        description: "",
+        name: videoName,
+        description: videoDescription,
       });
       cleanSelectedVideo();
     },

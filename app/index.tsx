@@ -24,16 +24,7 @@ export default function App() {
   return (
     <SafeAreaView style={tw.style("flex-1 bg-darkGray")}>
       <StatusBar style="light" />
-      <View style={tw.style("container")}>
-        <BaseButton
-          onPress={() => router.push("/video-modals/select")}
-          style={tw.style("button-icon")}
-        >
-          <Entypo name="folder-video" size={16} color="black" />
-          <ThemedText color={Colors.darkGray} weight={500} size={16}>
-            Crop a video
-          </ThemedText>
-        </BaseButton>
+      <View style={tw.style("container gap-5")}>
         {croppedVideos.length > 0 && (
           <FlatList
             data={croppedVideos}
@@ -44,13 +35,26 @@ export default function App() {
                   uri: item.uri,
                   thumbnail: item.thumbnail,
                   id: item.id,
+                  name: item.name,
+                  description: item.description,
                 }}
               />
             )}
-            contentContainerStyle={tw.style("w-full gap-4")}
-            style={tw.style("w-full")}
+            numColumns={2}
+            columnWrapperStyle={tw`gap-5`}
+            contentContainerStyle={tw.style("w-full gap-5")}
           />
         )}
+        <View style={tw`flex-1`} />
+        <BaseButton
+          onPress={() => router.push("/video-modals/select")}
+          style={tw.style("button-icon")}
+        >
+          <Entypo name="folder-video" size={16} color="black" />
+          <ThemedText color={Colors.darkGray} weight={500} size={16}>
+            Crop a video
+          </ThemedText>
+        </BaseButton>
       </View>
     </SafeAreaView>
   );

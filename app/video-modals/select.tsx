@@ -110,12 +110,12 @@ const Select = () => {
           lineHeight={20}
           style={tw.style("text-center max-w-60")}
         >
-          Please select a video file that you would like to crop. You can choose
-          a video from your device, but {"\n"}it must be longer than{" "}
+          Please select a video file for cropping. Ensure that the video is
+          selected from your device and has a duration of at least{" "}
           <ThemedText size={18} lineHeight={20} weight={700}>
-            5
-          </ThemedText>{" "}
-          seconds.
+            5{"\u00A0"}seconds
+          </ThemedText>
+          .
         </ThemedText>
       </View>
     </SafeAreaView>

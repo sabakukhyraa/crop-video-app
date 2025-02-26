@@ -53,7 +53,6 @@ const Crop = () => {
     p.muted = true;
     p.timeUpdateEventInterval = 0.5;
     p.play();
-    Platform.OS == "ios" && p.pause();
   });
 
   const { isPlaying } = useEvent(player, "playingChange", {

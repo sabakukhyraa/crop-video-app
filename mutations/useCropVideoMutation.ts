@@ -3,6 +3,7 @@ import { CroppedVideo } from "@store/createVideoSlice";
 import { useBoundStore } from "@store/useBoundStore";
 import { CropParams, cropWithFFMPEG } from "@helpers/cropWithFFMPEG";
 import { generateThumbnail } from "@helpers/generateThumbnail";
+import { router } from "expo-router";
 
 interface MutationOutput {
   outputUri: string;
@@ -21,6 +22,9 @@ export function useCropVideoMutation(): UseMutationResult<
 
   const cleanSelectedVideo = useBoundStore(
     (state: { cleanSelectedVideo: () => void }) => state.cleanSelectedVideo
+  );
+  const cleanBoth = useBoundStore(
+    (state: { cleanBoth: () => void }) => state.cleanBoth
   );
 
   const videoName = useBoundStore((state) => state.videoName);
@@ -43,7 +47,9 @@ export function useCropVideoMutation(): UseMutationResult<
         name: videoName,
         description: videoDescription,
       });
+      router.dismissAll();
       cleanSelectedVideo();
+      cleanBoth();
     },
     onError: (error: Error) => {
       console.error("Video cropping process error:", error);

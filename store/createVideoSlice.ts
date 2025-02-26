@@ -12,6 +12,7 @@ export interface VideoSlice {
   croppedVideos: CroppedVideo[];
 
   addCroppedVideo: (video: CroppedVideo) => void;
+  editCroppedVideo: (id: string, name: string, description: string) => void;
   removeCroppedVideo: (id: string) => void;
 }
 
@@ -21,6 +22,14 @@ export const createVideoSlice: StateCreator<VideoSlice> = (set) => ({
   addCroppedVideo: (video) => {
     set((state) => ({
       croppedVideos: [...state.croppedVideos, video],
+    }));
+  },
+
+  editCroppedVideo: (id, name, description) => {
+    set((state) => ({
+      croppedVideos: state.croppedVideos.map((video) =>
+        video.id === id ? { ...video, name, description } : video
+      ),
     }));
   },
 

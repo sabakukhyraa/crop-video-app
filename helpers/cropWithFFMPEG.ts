@@ -1,21 +1,22 @@
-import { FFmpegKit, ReturnCode } from 'ffmpeg-kit-react-native';
-import * as FileSystem from 'expo-file-system';
-import secondsToHours from './secondsToHours';
+import { FFmpegKit, ReturnCode } from "ffmpeg-kit-react-native";
+import * as FileSystem from "expo-file-system";
+import secondsToHours from "./secondsToHours";
 
 export interface CropParams {
   uri: string;
   start: number;
-  end: number;
   id: string;
 }
 
-const documentsDir = FileSystem.documentDirectory || ''; 
+const documentsDir = FileSystem.documentDirectory || "";
 
 export const cropWithFFMPEG = (params: CropParams): Promise<string> => {
   return new Promise<string>(async (resolve, reject) => {
     try {
       const outputPath = `${documentsDir}cropped-${params.id}.mp4`;
-      const command = `-i "${params.uri}" -ss ${secondsToHours(params.start)} -to ${secondsToHours(params.end)} -c copy "${outputPath}"`;
+      const command = `-ss ${secondsToHours(params.start)} -i "${
+        params.uri
+      }" -t ${secondsToHours(5)} -c copy "${outputPath}"`;
 
       const session = await FFmpegKit.execute(command);
       const returnCode = await session.getReturnCode();
@@ -23,7 +24,7 @@ export const cropWithFFMPEG = (params: CropParams): Promise<string> => {
       if (ReturnCode.isSuccess(returnCode)) {
         resolve(outputPath);
       } else if (ReturnCode.isCancel(returnCode)) {
-        reject(new Error('Video cropping process has been canceled.'));
+        reject(new Error("Video cropping process has been canceled."));
       } else {
         const failStackTrace = await session.getFailStackTrace();
         reject(new Error(`Video cropping error: ${failStackTrace}`));
@@ -32,7 +33,7 @@ export const cropWithFFMPEG = (params: CropParams): Promise<string> => {
       if (error instanceof Error) {
         reject(error);
       } else {
-        reject(new Error('An unknown error occurred.'));
+        reject(new Error("An unknown error occurred."));
       }
     }
   });

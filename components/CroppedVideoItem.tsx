@@ -1,8 +1,6 @@
 import tw from "@lib/tailwind";
-import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
-import { generateThumbnail } from "@helpers/generateThumbnail";
 
 export default function CroppedVideoItem({
   video,

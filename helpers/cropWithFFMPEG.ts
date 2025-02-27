@@ -1,16 +1,11 @@
 import { FFmpegKit, ReturnCode } from "ffmpeg-kit-react-native";
 import * as FileSystem from "expo-file-system";
+import { CropParams } from "mutations/useCropVideoMutation";
 
 const formatTime = (seconds: number) => {
   const date = new Date(seconds * 1000);
   return date.toISOString().substring(11, 23);
 };
-
-export interface CropParams {
-  uri: string;
-  start: number;
-  id: string;
-}
 
 const documentsDir = FileSystem.documentDirectory || "";
 

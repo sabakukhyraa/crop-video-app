@@ -1,7 +1,7 @@
 import BaseButton from "@components/BaseButton";
 import ThemedText from "@components/ThemedText";
 import tw from "@lib/tailwind";
-import { FlatList, View } from "react-native";
+import { FlatList, Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Entypo from "@expo/vector-icons/Entypo";
 import Colors from "constants/Colors";
@@ -58,7 +58,7 @@ export default function App() {
         )}
         <BaseButton
           onPress={() => router.push("/video-modals/select")}
-          style={tw.style("button-icon mb-2")}
+          style={tw.style("button-icon", Platform.OS == "ios" && "mb-2")}
         >
           <Entypo name="folder-video" size={16} color="black" />
           <ThemedText

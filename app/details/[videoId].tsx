@@ -71,7 +71,7 @@ const VideoDetail = () => {
         text: "Delete",
         onPress: () => {
           removeCroppedVideo(id);
-          router.back();
+          router.dismissAll();
         },
       },
       {

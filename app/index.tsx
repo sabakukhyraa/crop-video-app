@@ -14,7 +14,7 @@ export default function App() {
   const croppedVideos = useBoundStore((state) => state.croppedVideos);
 
   return (
-    <SafeAreaView style={tw.style("flex-1 bg-darkGray")}>
+    <SafeAreaView style={tw.style("flex-1 bg-darkGray")} edges={["top"]}>
       <View
         style={tw.style(
           "w-full py-5 items-center justify-center relative bg-darkGray"
@@ -29,7 +29,7 @@ export default function App() {
       <View style={tw.style("container bg-midGray gap-4")}>
         {croppedVideos.length > 0 ? (
           <FlatList
-            data={[croppedVideos[0]]}
+            data={croppedVideos}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <CroppedVideoItem
@@ -58,7 +58,7 @@ export default function App() {
         )}
         <BaseButton
           onPress={() => router.push("/video-modals/select")}
-          style={tw.style("button-icon")}
+          style={tw.style("button-icon mb-2")}
         >
           <Entypo name="folder-video" size={16} color="black" />
           <ThemedText

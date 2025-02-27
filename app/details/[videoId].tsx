@@ -74,6 +74,7 @@ const VideoDetail = () => {
           removeCroppedVideo(id);
           router.dismissAll();
         },
+        style: "destructive"
       },
       {
         text: "Cancel",

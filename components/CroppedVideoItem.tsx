@@ -14,7 +14,7 @@ export default function CroppedVideoItem({ video }: { video: CroppedVideo }) {
   return (
     <View
       style={tw.style("rounded-xl bg-midGray overflow-hidden", {
-        width: (Dimensions.get("window").width - 60) / 2,
+        width: (Dimensions.get("window").width - 56) / 2,
       })}
     >
       <View style={tw.style("w-full")}>
@@ -39,21 +39,13 @@ export default function CroppedVideoItem({ video }: { video: CroppedVideo }) {
             size={54}
             color={Colors.lightGray}
           />
-        </TouchableOpacity>
-        <View style={tw`flex-1 p-3 items-center gap-3`}>
-          <View>
-            <ThemedText size={16} weight={600} color={Colors.lightGray}>
+          <View style={tw`absolute bottom-2 left-2 z-20`}>
+            <ThemedText size={14} weight={600} color={Colors.lightGray}>
               {video.name}
             </ThemedText>
           </View>
-          <ThemedText
-            size={12}
-            weight={300}
-            color={Colors.lightGray}
-            style={tw`self-start`}
-          >
-            {video.description}
-          </ThemedText>
+        </TouchableOpacity>
+        <View style={tw`flex-1 p-3 items-start gap-3`}>
           <TouchableOpacity
             style={tw.style(
               "button-icon bg-lightGray rounded-lg w-full px-2 h-7 items-center justify-center self-end"

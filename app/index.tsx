@@ -24,7 +24,7 @@ export default function App() {
   return (
     <SafeAreaView style={tw.style("flex-1 bg-darkGray")}>
       <StatusBar style="light" />
-      <View style={tw.style("container gap-5")}>
+      <View style={tw.style("container gap-4")}>
         {croppedVideos.length > 0 && (
           <FlatList
             data={croppedVideos}
@@ -41,8 +41,10 @@ export default function App() {
               />
             )}
             numColumns={2}
-            columnWrapperStyle={tw`gap-5`}
-            contentContainerStyle={tw.style("w-full gap-5")}
+            columnWrapperStyle={tw`gap-4`}
+            contentContainerStyle={tw.style("w-full gap-4")}
+            showsVerticalScrollIndicator={false}
+            horizontal={false}
           />
         )}
         <View style={tw`flex-1`} />

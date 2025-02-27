@@ -1,10 +1,10 @@
-import React, { useState, forwardRef, useImperativeHandle, Ref } from "react";
+import React, { forwardRef, Ref, useImperativeHandle, useState } from "react";
 import { View, TextInput } from "react-native";
 import { z } from "zod";
+
 import tw from "@lib/tailwind";
 import ThemedText from "@components/ThemedText";
 import Colors from "@constants/Colors";
-import { useBoundStore } from "@store/useBoundStore";
 
 const metadataSchema = z.object({
   name: z
@@ -21,19 +21,16 @@ export interface MetadataFormHandles {
   submit: () => { name?: string; description?: string };
 }
 
-type MetadataFormProps = {};
+interface MetadataFormProps {
+  name: string;
+  description: string;
+  setName: React.Dispatch<React.SetStateAction<string>>;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const MetadataForm = forwardRef<MetadataFormHandles, MetadataFormProps>(
   (props, ref: Ref<MetadataFormHandles>) => {
-    const videoName = useBoundStore((state) => state.videoName);
-    const videoDescription = useBoundStore((state) => state.videoDescription);
-    const setVideoName = useBoundStore((state) => state.setVideoName);
-    const setVideoDescription = useBoundStore(
-      (state) => state.setVideoDescription
-    );
-
-    const [name, setName] = useState(videoName);
-    const [description, setDescription] = useState(videoDescription);
+    const { name, description, setName, setDescription } = props;
 
     const [errors, setErrors] = useState<{
       name?: string;
@@ -46,9 +43,6 @@ const MetadataForm = forwardRef<MetadataFormHandles, MetadataFormProps>(
       try {
         metadataSchema.parse({ name, description });
         setErrors({});
-
-        setVideoName(name);
-        setVideoDescription(description);
       } catch (err) {
         if (err instanceof z.ZodError) {
           err.issues.forEach((issue) => {
@@ -79,9 +73,7 @@ const MetadataForm = forwardRef<MetadataFormHandles, MetadataFormProps>(
         <TextInput
           style={tw.style(
             `w-full bg-midGray rounded-xl text-[16px] text-lightGray font-raleway h-13 pl-4`,
-            {
-              lineHeight: 18,
-            }
+            { lineHeight: 18 }
           )}
           value={name}
           onChangeText={setName}
@@ -100,9 +92,7 @@ const MetadataForm = forwardRef<MetadataFormHandles, MetadataFormProps>(
             `w-full bg-midGray rounded-xl text-[16px] text-lightGray font-raleway p-4 h-[${
               18 * 5 + 32
             }px]`,
-            {
-              lineHeight: 18,
-            }
+            { lineHeight: 18 }
           )}
           value={description}
           onChangeText={setDescription}

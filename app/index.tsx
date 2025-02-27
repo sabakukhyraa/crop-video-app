@@ -29,7 +29,7 @@ export default function App() {
       <View style={tw.style("container bg-midGray gap-4")}>
         {croppedVideos.length > 0 ? (
           <FlatList
-            data={croppedVideos}
+            data={croppedVideos.reverse()}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <CroppedVideoItem

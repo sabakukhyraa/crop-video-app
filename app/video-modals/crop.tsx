@@ -274,7 +274,7 @@ const Crop = () => {
 
         <BaseButton
           style={tw.style("button-icon", { width: windowWidth - 40 })}
-          onPress={() => setCropStartTime(selectedStartTime)}
+          onPress={() => setCropStartTime(Math.max(selectedStartTime, 0.001))}
         >
           <MaterialCommunityIcons
             name="movie-open-edit"

@@ -62,8 +62,10 @@ const Metadata = () => {
       <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
 
       <View style={tw.style("container bg-darkGray")}>
-        {isPending ? (
-          <ActivityIndicator size="large" color={Colors.lightGray} />
+        {true ? (
+          <View style={tw.style("flex-1 justify-center")}>
+            <ActivityIndicator size="large" color={Colors.lightGray} />
+          </View>
         ) : (
           <MetadataForm
             name={name}

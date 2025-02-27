@@ -14,6 +14,7 @@ import BaseButton from "@components/BaseButton";
 import { router, useLocalSearchParams } from "expo-router";
 import ThemedText from "@components/ThemedText";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Feather from "@expo/vector-icons/Feather";
 import Colors from "@constants/Colors";
 import { useBoundStore } from "@store/useBoundStore";
 import { CroppedVideo } from "@store/createVideoSlice";
@@ -138,6 +139,21 @@ const VideoDetail = () => {
           <View style={tw`flex-1 w-full px-5 pb-5 gap-5`}>
             <ThemedText>{video?.description}</ThemedText>
             <View style={tw`flex-1`} />
+            <BaseButton
+              disabled={!video?.id}
+              onPress={() => router.replace(`/edit/${video?.id}`)}
+              style={tw.style("button-icon", Platform.OS == "ios" && "mb-2")}
+            >
+              <Feather name="edit" size={14} color={Colors.darkGray} />
+              <ThemedText
+                color={Colors.darkGray}
+                weight={600}
+                size={16}
+                lineHeight={18}
+              >
+                Edit
+              </ThemedText>
+            </BaseButton>
             <BaseButton
               onPress={handleDelete}
               style={tw.style("button-icon", Platform.OS == "ios" && "mb-2")}

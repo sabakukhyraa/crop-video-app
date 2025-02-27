@@ -51,32 +51,6 @@ const Crop = () => {
     console.log(mutationData);
   };
 
-  // -----------------------------------------------------
-  // CLEANUP
-  // -----------------------------------------------------
-  // Cleanup the selected video from cache
-  useEffect(() => {
-    return () => {
-      (async () => {
-        try {
-          await FileSystem.deleteAsync(selectedVideo!.uri, {
-            idempotent: true,
-          });
-        } catch (error) {
-          console.error(error);
-        }
-      })();
-    };
-  }, []);
-
-  // Clean the store on modal exit
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", () => {
-      cleanSelectedVideo();
-    });
-    return unsubscribe;
-  }, [navigation, cleanSelectedVideo]);
-
   return (
     <SafeAreaView
       style={tw.style(
@@ -96,8 +70,6 @@ const Crop = () => {
         ) : (
           <MetadataForm ref={metadataFormRef} />
         )}
-
-        <View style={tw`flex-1`} />
 
         <BaseButton
           onPress={handleCropAndCreate}

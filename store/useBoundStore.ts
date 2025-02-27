@@ -3,20 +3,18 @@ import { create } from "zustand";
 import { devtools, persist, createJSONStorage } from "zustand/middleware";
 
 import { createVideoSlice, VideoSlice } from "./createVideoSlice";
-import { createMetadataSlice, MetadataSlice } from "./createMetadataSlice";
 import {
   createSelectedVideoSlice,
   SelectedVideoSlice,
 } from "./createSelectedVideoSlice";
 
-export type AppState = VideoSlice & SelectedVideoSlice & MetadataSlice;
+export type AppState = VideoSlice & SelectedVideoSlice;
 
 export const useBoundStore = create<AppState>()(
   devtools(
     persist(
       (...args) => ({
         ...createVideoSlice(...args),
-        ...createMetadataSlice(...args),
         ...createSelectedVideoSlice(...args),
       }),
       {

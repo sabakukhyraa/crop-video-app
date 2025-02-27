@@ -46,8 +46,20 @@ const RootLayout = () => {
           >
             <View style={{ flex: 1 }}>
               <Stack>
-                <Stack.Screen name="details/[videoId]" />
-                <Stack.Screen name="edit/[videoId]" />
+                <Stack.Screen
+                  name="details/[videoId]"
+                  options={{
+                    headerShown: false,
+                    animation: "slide_from_right",
+                  }}
+                />
+                <Stack.Screen
+                  name="edit/[videoId]"
+                  options={{
+                    headerShown: false,
+                    animation: "slide_from_right",
+                  }}
+                />
                 <Stack.Screen
                   name="video-modals/select"
                   options={{

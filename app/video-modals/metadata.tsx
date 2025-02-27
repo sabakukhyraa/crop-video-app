@@ -62,7 +62,12 @@ const Metadata = () => {
       {/* Seperator */}
       <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
 
-      <View style={tw.style("container bg-darkGray", Platform.OS == "ios" && "pb-12")}>
+      <View
+        style={tw.style(
+          "container bg-darkGray",
+          Platform.OS == "ios" && "pb-16"
+        )}
+      >
         {isPending ? (
           <View style={tw.style("flex-1 justify-center")}>
             <ActivityIndicator size="large" color={Colors.lightGray} />

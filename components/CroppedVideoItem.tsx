@@ -21,7 +21,7 @@ function CroppedVideoItem({ video }: { video: CroppedVideo }) {
 
   return (
     <View
-      style={tw.style("rounded-xl bg-midGray overflow-hidden", {
+      style={tw.style("rounded-xl bg-darkGray overflow-hidden", {
         width: (Dimensions.get("window").width - 56) / 2,
       })}
     >

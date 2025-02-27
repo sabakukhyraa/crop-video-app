@@ -11,23 +11,25 @@ import CroppedVideoItem from "@components/CroppedVideoItem";
 import { router } from "expo-router";
 
 export default function App() {
-  // const {
-  //   mutate,
-  //   isPending,
-  //   isError,
-  //   error,
-  //   data: mutationData,
-  // } = useCropVideoMutation();
-
   const croppedVideos = useBoundStore((state) => state.croppedVideos);
 
   return (
     <SafeAreaView style={tw.style("flex-1 bg-darkGray")}>
+      <View
+        style={tw.style(
+          "w-full py-5 items-center justify-center relative bg-darkGray"
+        )}
+      >
+        <ThemedText size={20} weight={700}>
+          Cropped Videos
+        </ThemedText>
+      </View>
+      <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
       <StatusBar style="light" />
-      <View style={tw.style("container gap-4")}>
-        {croppedVideos.length > 0 && (
+      <View style={tw.style("container bg-midGray gap-4")}>
+        {croppedVideos.length > 0 ? (
           <FlatList
-            data={croppedVideos}
+            data={[croppedVideos[0]]}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <CroppedVideoItem
@@ -43,17 +45,28 @@ export default function App() {
             numColumns={2}
             columnWrapperStyle={tw`gap-4`}
             contentContainerStyle={tw.style("w-full gap-4")}
+            style={tw`w-full`}
             showsVerticalScrollIndicator={false}
             horizontal={false}
           />
+        ) : (
+          <View style={tw`flex-1 justify-center`}>
+            <ThemedText size={16} weight={700}>
+              No videos yet.
+            </ThemedText>
+          </View>
         )}
-        <View style={tw`flex-1`} />
         <BaseButton
           onPress={() => router.push("/video-modals/select")}
           style={tw.style("button-icon")}
         >
           <Entypo name="folder-video" size={16} color="black" />
-          <ThemedText color={Colors.darkGray} weight={500} size={16}>
+          <ThemedText
+            color={Colors.darkGray}
+            weight={500}
+            size={16}
+            lineHeight={18}
+          >
             Crop a video
           </ThemedText>
         </BaseButton>

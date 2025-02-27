@@ -13,10 +13,11 @@ export interface VideoSlice {
 
   addCroppedVideo: (video: CroppedVideo) => void;
   editCroppedVideo: (id: string, name: string, description: string) => void;
+  getCroppedVideo: (id: string) => CroppedVideo | undefined;
   removeCroppedVideo: (id: string) => void;
 }
 
-export const createVideoSlice: StateCreator<VideoSlice> = (set) => ({
+export const createVideoSlice: StateCreator<VideoSlice> = (set, get) => ({
   croppedVideos: [],
 
   addCroppedVideo: (video) => {
@@ -31,6 +32,10 @@ export const createVideoSlice: StateCreator<VideoSlice> = (set) => ({
         video.id === id ? { ...video, name, description } : video
       ),
     }));
+  },
+
+  getCroppedVideo: (id) => {
+    return get().croppedVideos.find((video) => video.id === id);
   },
 
   removeCroppedVideo: (id) => {

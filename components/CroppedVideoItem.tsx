@@ -4,13 +4,21 @@ import { Image } from "expo-image";
 import { CroppedVideo } from "@store/createVideoSlice";
 import ThemedText from "./ThemedText";
 import Colors from "@constants/Colors";
-import BaseButton from "./BaseButton";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { memo, useCallback } from "react";
 
-export default function CroppedVideoItem({ video }: { video: CroppedVideo }) {
+function CroppedVideoItem({ video }: { video: CroppedVideo }) {
+  const handlePlayPress = useCallback(() => {
+    router.push(`/details/${video.id}`);
+  }, [video.id]);
+
+  const handleEditPress = useCallback(() => {
+    router.push(`/edit/${video.id}`);
+  }, [video.id]);
+
   return (
     <View
       style={tw.style("rounded-xl bg-midGray overflow-hidden", {
@@ -20,7 +28,7 @@ export default function CroppedVideoItem({ video }: { video: CroppedVideo }) {
       <View style={tw.style("w-full")}>
         <TouchableOpacity
           style={tw`relative w-full max-h-[160px] items-center justify-center`}
-          onPress={() => router.push(`/details/${video.id}`)}
+          onPress={handlePlayPress}
         >
           <Image
             source={{ uri: video.thumbnail || "" }}
@@ -50,7 +58,7 @@ export default function CroppedVideoItem({ video }: { video: CroppedVideo }) {
             style={tw.style(
               "button-icon bg-lightGray rounded-lg w-full px-2 h-7 items-center justify-center self-end"
             )}
-            onPress={() => router.push(`/edit/${video.id}`)}
+            onPress={handleEditPress}
           >
             <Feather name="edit" size={14} color={Colors.darkGray} />
             <ThemedText color={Colors.darkGray} weight={500} lineHeight={17}>
@@ -62,3 +70,5 @@ export default function CroppedVideoItem({ video }: { video: CroppedVideo }) {
     </View>
   );
 }
+
+export default memo(CroppedVideoItem);

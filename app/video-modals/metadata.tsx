@@ -3,18 +3,15 @@ import ModalHeader from "@components/ModalHeader";
 import ThemedText from "@components/ThemedText";
 import Colors from "@constants/Colors";
 import tw from "@lib/tailwind";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { ActivityIndicator, Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as FileSystem from "expo-file-system";
-import { useEffect, useRef } from "react";
+import { useRef, useState } from "react";
 import { useBoundStore } from "@store/useBoundStore";
 import MetadataForm, { MetadataFormHandles } from "@components/MetadataForm";
 import { useCropVideoMutation } from "mutations/useCropVideoMutation";
 
-const Crop = () => {
-  const navigation = useNavigation();
-
+const Metadata = () => {
   const {
     mutate,
     isPending,
@@ -23,10 +20,10 @@ const Crop = () => {
     data: mutationData,
   } = useCropVideoMutation();
 
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+
   const selectedVideo = useBoundStore((state) => state.selectedVideo);
-  const cleanSelectedVideo = useBoundStore(
-    (state: { cleanSelectedVideo: () => void }) => state.cleanSelectedVideo
-  );
 
   const metadataFormRef = useRef<MetadataFormHandles | null>(null);
 
@@ -45,10 +42,10 @@ const Crop = () => {
         uri: selectedVideo.uri,
         start: selectedVideo.cropStartTime,
         id: Date.now().toString(),
+        name: name,
+        description: description,
       });
     }
-
-    console.log(mutationData);
   };
 
   return (
@@ -68,7 +65,13 @@ const Crop = () => {
         {isPending ? (
           <ActivityIndicator size="large" color={Colors.lightGray} />
         ) : (
-          <MetadataForm ref={metadataFormRef} />
+          <MetadataForm
+            name={name}
+            description={description}
+            setName={setName}
+            setDescription={setDescription}
+            ref={metadataFormRef}
+          />
         )}
 
         <BaseButton
@@ -89,4 +92,4 @@ const Crop = () => {
   );
 };
 
-export default Crop;
+export default Metadata;

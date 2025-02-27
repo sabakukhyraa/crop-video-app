@@ -7,8 +7,14 @@ import Colors from "@constants/Colors";
 import { useBoundStore } from "@store/useBoundStore";
 
 const metadataSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  description: z.string().max(200, "Description cannot exceed 200 characters"),
+  name: z
+    .string()
+    .min(3, "Name must be at least 3 characters")
+    .max(20, "Name must be at most 20 characters"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(200, "Description cannot exceed 200 characters"),
 });
 
 export interface MetadataFormHandles {
@@ -68,7 +74,7 @@ const MetadataForm = forwardRef<MetadataFormHandles, MetadataFormProps>(
     return (
       <View style={tw`w-full`}>
         <ThemedText style={tw`mb-1`} color={Colors.lightGray}>
-          Name
+          Video Name
         </ThemedText>
         <TextInput
           style={tw.style(
@@ -86,8 +92,8 @@ const MetadataForm = forwardRef<MetadataFormHandles, MetadataFormProps>(
           </ThemedText>
         )}
 
-        <ThemedText style={tw`mb-1`} color={Colors.lightGray}>
-          Description
+        <ThemedText style={tw`mb-1 mt-2`} color={Colors.lightGray}>
+          Video Description
         </ThemedText>
         <TextInput
           style={tw.style(

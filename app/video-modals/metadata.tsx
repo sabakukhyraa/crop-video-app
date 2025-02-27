@@ -54,6 +54,7 @@ const Metadata = () => {
         "flex-1",
         Platform.OS === "ios" ? "bg-darkGray" : "bg-midGray"
       )}
+      edges={["top", "bottom"]}
     >
       {/* Header */}
       <ModalHeader content="Add Metadata" onClose={() => router.back()} />
@@ -61,8 +62,8 @@ const Metadata = () => {
       {/* Seperator */}
       <View style={tw.style("w-full h-px bg-lightGray opacity-10")} />
 
-      <View style={tw.style("container bg-darkGray")}>
-        {true ? (
+      <View style={tw.style("container bg-darkGray", Platform.OS == "ios" && "pb-12")}>
+        {isPending ? (
           <View style={tw.style("flex-1 justify-center")}>
             <ActivityIndicator size="large" color={Colors.lightGray} />
           </View>
@@ -75,10 +76,11 @@ const Metadata = () => {
             ref={metadataFormRef}
           />
         )}
-
+        <View style={tw`flex-1`}></View>
         <BaseButton
           onPress={handleCropAndCreate}
-          style={tw.style("button-icon")}
+          style={tw.style("button-icon self-end")}
+          disabled={isPending}
         >
           <ThemedText
             color={Colors.darkGray}

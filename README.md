@@ -12,6 +12,11 @@ npx expo install
 
 ```bash
 npx expo prebuild
+```
+```bash
 npx expo run:android
+```
+or
+```bash
 npx expo run:ios
 ```

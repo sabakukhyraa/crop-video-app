@@ -50,7 +50,7 @@ export default function CroppedVideoItem({ video }: { video: CroppedVideo }) {
             size={12}
             weight={300}
             color={Colors.lightGray}
-            style={tw`text-start self-start`}
+            style={tw`self-start`}
           >
             {video.description}
           </ThemedText>

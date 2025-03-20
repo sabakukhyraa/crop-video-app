@@ -1,9 +1,8 @@
-# Case study for hiring process of 7apps
-Video Diary App - crop and store videos.
+# Video Diary App - crop and store videos
 
 ## Setup
 ```bash
-git clone https://github.com/sabakukhyraa/7apps-casestudy.git
+git clone https://github.com/sabakukhyraa/crop-video-app.git
 ```
 
 ```bash
